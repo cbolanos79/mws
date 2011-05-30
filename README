@@ -1,0 +1,3 @@
+MWS aka Mobile Weather Station is intented to develop a mobile sensor unit
+based on arduino, a motor shield and a bunch of sensors to get tempterature,
+humidity, light, etc... reads.
