@@ -185,7 +185,7 @@ void loop()
         }
       }
     }
-    Serial.flush();
+    //Serial.flush();
   }
-
+ 
 }
