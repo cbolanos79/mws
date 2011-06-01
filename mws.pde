@@ -137,7 +137,7 @@ void loop()
       
       // Range sensor on front
       Serial.print("UR1");
-      //Serial.print((long) hc1.Ranging(CM), DEC);
+      Serial.print((long) hc1.Ranging(CM), DEC);
       Serial.print(" ");
 
       // Range sensor on top
