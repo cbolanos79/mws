@@ -153,6 +153,11 @@ void loop()
       Serial.print (" ");
       Serial.print("H");
       Serial.print(hum);
+      Serial.print(" ");
+      
+      // LDR
+      Serial.print("LDR");
+      Serial.print(analogRead(2));
       Serial.println();
     } else if (s[0] == 's') {
       int power;
