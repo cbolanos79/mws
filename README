@@ -1,3 +1,13 @@
-MWS aka Mobile Weather Station is intented to develop a mobile sensor unit
-based on arduino, a motor shield and a bunch of sensors to get tempterature,
-humidity, light, etc... reads.
+MWS aka Mobile Weather Station es una plataforma móvil de sensores basada
+en arduino, con la idea de aprender el manejo de robots autónomos y
+navegación, tanto en interiores como exteriores, asi como la integración
+de sistemas de comunicación para el envío de información recopilada
+por los sensores.
+La plataforma estará comandada, incialmente, por un pc con scripts en
+python, desde el cual se probarán los algoritmos hasta comprobar que
+funcionan correctamente.
+Una vez probados, se integrarán en el código de arduino, ganando cada vez
+más en autonomía.
+El primer objetivo es realizar una estación capaz de recoger datos de
+temperatura y humedad en exteriores, manteniéndose a la sombra.
+Más adelante, se planteará navegación en interiores, etc...
