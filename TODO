@@ -1,0 +1,5 @@
+* Sujetar componentes en el chasis.
+* Implementar giro a la izquierda.
+* Implementar alineado con una dirección en grados.
+* Implementar en arduino los algoritmos probados en python.
+* Implementar envío de datos por VirtualWire (determinar cada cuanto tiempo).
