@@ -1,4 +1,5 @@
 #include <Ultrasonic.h>
+#include <Wire.h>
 
 //Arduino PWM Speed Control：
 int E1 = 6;  
@@ -20,6 +21,10 @@ int M2 = 4;
 #define UR2_ECHO_PIN 3
 
 #define DHT11_PIN 0 // ADC0
+
+// Compass sensor
+
+int compassAddress = 0x42 >> 1; // HMC6352
 
 Ultrasonic hc1(UR1_TRIG_PIN, UR1_ECHO_PIN), hc2(UR2_TRIG_PIN, UR2_ECHO_PIN);
 
@@ -108,10 +113,37 @@ bool readDht11(float &temp, float &hum) {
   
 }
 
+void setupCompass() {
+  Wire.begin();  
+}
+
+float readCompass() {
+  Wire.beginTransmission(compassAddress);
+  Wire.send("A");              // The "Get Data" command
+  Wire.endTransmission();
+  delay(10);                   // The HMC6352 needs at least a 70us (microsecond) delay
+  // after this command.  Using 10ms just makes it safe
+  // Read the 2 heading bytes, MSB first
+  // The resulting 16bit word is the compass heading in 10th's of a degree
+  // For example: a heading of 1345 would be 134.5 degrees
+  Wire.requestFrom(compassAddress, 2);        // Request the 2 byte heading (MSB comes first)
+  int i = 0;
+  byte headingData[2];
+  
+  while(Wire.available() && i < 2)
+  { 
+    headingData[i] = Wire.receive();
+    i++;
+  }
+  int headingValue = headingData[0]*256 + headingData[1];    
+  return int(headingValue/10) + (0.1*(int(headingValue%10)));
+}
+
 void setup()
 {
   setupEngines();
   setupDht11();
+  setupCompass();
   Serial.begin(9600);
 }
 
@@ -137,7 +169,7 @@ void loop()
       
       // Range sensor on front
       Serial.print("UR1");
-      //Serial.print((long) hc1.Ranging(CM), DEC);
+      Serial.print((long) hc1.Ranging(CM), DEC);
       Serial.print(" ");
 
       // Range sensor on top
@@ -148,16 +180,21 @@ void loop()
       // Temperature and humidity
       float temp=0.0, hum=0.0;
       readDht11(temp, hum);
-      Serial.print("T");
+      Serial.print("TMP");
       Serial.print(temp);
       Serial.print (" ");
-      Serial.print("H");
+      Serial.print("HUM");
       Serial.print(hum);
       Serial.print(" ");
       
       // LDR
       Serial.print("LDR");
       Serial.print(analogRead(2));
+      Serial.print(" ");
+      
+      // Compass
+      Serial.print("HDG");
+      Serial.print(readCompass());
       Serial.println();
     } else if (s[0] == 's') {
       int power;
