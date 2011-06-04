@@ -149,7 +149,8 @@ void setLeftEnginePower(int power, int direction) {
   else if (direction == ENGINE_BACKWARD)
     digitalWrite(M1, LOW);
 
-  analogWrite(E1, power);
+  int engPower = map(power, 0, 100, 0, 255);
+  analogWrite(E1, engPower);
 }
 
 void setRightEnginePower(int power, int direction) {
@@ -158,7 +159,8 @@ void setRightEnginePower(int power, int direction) {
   else if (direction == ENGINE_BACKWARD)
     digitalWrite(M2, LOW);
 
-  analogWrite(E2, power);
+  int engPower = map(power, 0, 100, 0, 255);
+  analogWrite(E2, engPower);
 }
 
 void setEnginePower(int power, int direction) {
@@ -170,6 +172,71 @@ void stopEngines() {
   setEnginePower(0, ENGINE_FORWARD);
 }
 
+void engineRotateRight(int power) {
+  setLeftEnginePower(power, ENGINE_FORWARD);
+  setRightEnginePower(power, ENGINE_FORWARD);
+
+}
+
+void engineRotateLeft(int power) {
+  setLeftEnginePower(power, ENGINE_BACKWARD);
+  setRightEnginePower(power, ENGINE_BACKWARD);
+
+}
+
+void rotateRight(int rotate) {
+  int hdg, startHdg, destHdg;
+  
+  hdg = startHdg = readCompass();
+  destHdg = startHdg + rotate;
+  engineRotateRight(100);
+  /*
+  Serial.print(hdg);
+  Serial.print(" ");
+  Serial.print(startHdg);
+  Serial.print(" ");
+  Serial.print(destHdg);
+  Serial.print(" ");
+  Serial.print(rotate);
+  */
+  if ((hdg + rotate) >= 359) {
+    Serial.print("Rota");
+    while (1) {
+      delay(100);
+      hdg = readCompass();
+      /*
+      Serial.print(hdg);
+      Serial.print(" ");
+      */
+      if ((hdg>=358) || (hdg <=20)){
+        destHdg = destHdg - 360;
+        /*
+        Serial.print("Para en ");
+        Serial.print(hdg);
+        Serial.print(" ");
+        Serial.print(destHdg);
+        */
+        break;
+      }
+    }
+  }
+  /*
+  Serial.print("Empieza a girar");
+  Serial.print(hdg);
+  Serial.print(" ");
+  Serial.print(destHdg);
+  */
+  while (hdg < destHdg) {
+    //Serial.print("Va rotando");
+    hdg = readCompass();
+    delay(100);
+    //Serial.print(hdg);
+    //Serial.print(" ");
+  }
+  //Serial.println();
+  stopEngines();
+  
+}
 
 void setup()
 {
@@ -234,7 +301,6 @@ void loop()
       // Set engine power
       if (s[1] == 'E') {
         int engine = s[2];
-        int power = map(int(s[4]), 0, 100, 0, 255);
         switch(engine) {
           // Left engine
           case 'L':
@@ -260,6 +326,14 @@ void loop()
             }
           break; 
         }
+      }
+    } else if (s[0] == 'r') {
+      // Rotate
+      char dir = s[1];
+      switch(dir) {
+        case 'R':
+          int rotate = atoi(&s[2]);
+          rotateRight(rotate);
       }
     }
     //Serial.flush();
