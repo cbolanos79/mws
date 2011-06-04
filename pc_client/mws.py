@@ -54,7 +54,11 @@ if __name__== "__main__":
   m = MWS(sys.argv[1])
   if len(sys.argv)>2:
     cmd = sys.argv[2][1:]
-    if cmd == "sr":
+    if cmd == "gs":
       while (1):
         print m.getSensorsRead()
+    elif cmd == "sh":
+      m.setHeading(int(sys.argv[3]))
+    elif cmd == "rr":
+      m .rotateRight(int(sys.argv[3]))
     sys.exit(0)
