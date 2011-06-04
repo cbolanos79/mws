@@ -192,7 +192,7 @@ void rotateRight(int rotate) {
   engineRotateRight(100);
   if ((hdg + rotate) >= 359) {
     while (1) {
-      delay(100);
+      delay(50);
       hdg = readCompass();
       if ((hdg>=359) || (hdg <=5)){
         destHdg = destHdg - 360;
@@ -201,7 +201,7 @@ void rotateRight(int rotate) {
     }
   }
   while (hdg < destHdg) {
-    delay(100);
+    delay(50);
     hdg = readCompass();
     
   }
@@ -211,8 +211,8 @@ void rotateRight(int rotate) {
 
 void setHeading(int hdg) {
   int currentHdg = readCompass();
-  delay(100);
-  currentHdg = readCompass();
+  //delay(100);
+  //currentHdg = readCompass();
   int destHdg;
   
   if (hdg == currentHdg)
