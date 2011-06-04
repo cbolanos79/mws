@@ -7,16 +7,11 @@ class MWS:
   BACKWARD = '-'
 
   def __init__(self, serial_port):
-    self._serial_port = serial.Serial(serial_port, 9600, timeout=1)
+    self._serial_port = serial.Serial(serial_port, 9600, timeout=10)
 
   def getSensorsRead(self):
     self._serial_port.write("g\n")
     return self._serial_port.readline().strip()
-
-  def getHdg(self):
-    sensors = self.getSensorsRead().split(" ")
-    hdg = int(float(sensors[5][3:]))
-    return hdg
 
   def setLeftEnginePower(self, power, direction = FORWARD):
     if direction == self.FORWARD:
@@ -39,33 +34,13 @@ class MWS:
     m.setRightEnginePower(power)
 
   def rotateRight(self, rotate):
-    hdg = startHdg = self.getHdg()
-    destHdg = startHdg + rotate
-    m.engineRotateRight(100)
-
-    if (hdg + rotate) >= 359:
-      while (1):
-        hdg = m.getHdg()
-        if (hdg>=359) or (hdg <= 20):
-          destHdg = destHdg - 360
-          break
-
-    while (hdg < destHdg):
-      hdg = m.getHdg()
-      print hdg
-    m.setEnginePower(0)
+    self._serial_port.write("rR%03d\n" % (rotate))
+    return self._serial_port.readline()
 
   def setHeading(self, hdg):
-    currentHdg = self.getHdg()
-    if hdg == currentHdg:
-      return
+    self._serial_port.write("sH%03d\n" % (hdg))
+    return self._serial_port.readline()
 
-    if hdg > currentHdg:
-      destHdg = hdg - currentHdg
-    else:
-      destHdg = (360 - currentHdg) + hdg
-    self.rotateRight(destHdg)
-    
   def setEnginePower(self, power, direction = FORWARD):
     if direction == self.FORWARD:
       self._serial_port.write("sEL%s%s\n" % ("+", chr(power)))
@@ -73,7 +48,13 @@ class MWS:
     elif direction == self.BACKWARD:
       self._serial_port.write("sEL%s%s\n" % ("-", chr(power)))
       self._serial_port.write("sER%s%s\n" % ("+", chr(power)))
+    return self._serial_port.readline()
 
 if __name__== "__main__":
   m = MWS(sys.argv[1])
-  print m.getSensorsRead()
+  if len(sys.argv)>2:
+    cmd = sys.argv[2][1:]
+    if cmd == "sr":
+      while (1):
+        print m.getSensorsRead()
+    sys.exit(0)
