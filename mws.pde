@@ -190,18 +190,28 @@ void rotateRight(int rotate) {
   hdg = startHdg = readCompass();
   destHdg = startHdg + rotate;
   engineRotateRight(100);
+  bool turn = false;
   if ((hdg + rotate) >= 359) {
+    turn = true;
     while (1) {
-      delay(50);
+      //delay(50);
       hdg = readCompass();
-      if ((hdg>=359) || (hdg <=5)){
-        destHdg = destHdg - 360;
+      if (hdg>=359) { // || (hdg <=5)){
+        destHdg = destHdg - 359;
         break;
       }
     }
   }
+  
+  if (turn) {
+    while (hdg > destHdg) {
+      hdg = readCompass();
+    }
+    turn = false;
+  }
+      
   while (hdg < destHdg) {
-    delay(50);
+    //delay(50);
     hdg = readCompass();
     
   }
