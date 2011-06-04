@@ -39,21 +39,33 @@ class MWS:
     m.setRightEnginePower(power)
 
   def rotateRight(self, rotate):
-    hdg = m.getHdg()
-    startHdg = self.getHdg()
-    destHdg = hdg + rotate
+    hdg = startHdg = self.getHdg()
+    destHdg = startHdg + rotate
     m.engineRotateRight(100)
 
     if (hdg + rotate) >= 359:
       while (1):
         hdg = m.getHdg()
-        if (hdg>=359) or (hdg <= 10):
+        if (hdg>=359) or (hdg <= 20):
           destHdg = destHdg - 360
           break
-    while (hdg <= destHdg):
+
+    while (hdg < destHdg):
       hdg = m.getHdg()
+      print hdg
     m.setEnginePower(0)
 
+  def setHeading(self, hdg):
+    currentHdg = self.getHdg()
+    if hdg == currentHdg:
+      return
+
+    if hdg > currentHdg:
+      destHdg = hdg - currentHdg
+    else:
+      destHdg = (360 - currentHdg) + hdg
+    self.rotateRight(destHdg)
+    
   def setEnginePower(self, power, direction = FORWARD):
     if direction == self.FORWARD:
       self._serial_port.write("sEL%s%s\n" % ("+", chr(power)))
@@ -64,12 +76,4 @@ class MWS:
 
 if __name__== "__main__":
   m = MWS(sys.argv[1])
-
-  ## Rotar derecha
-  # m.rotateRight(45)
-
-  ## Avanzar
-  # m.setEnginePower(100)
-
-  ## Retroceder
-  # m.setEnginePower(100, MWS.BACKWARD)
+  print m.getSensorsRead()
