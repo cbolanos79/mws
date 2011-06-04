@@ -139,6 +139,38 @@ float readCompass() {
   return int(headingValue/10) + (0.1*(int(headingValue%10)));
 }
 
+#define ENGINE_FORWARD 0
+#define ENGINE_BACKWARD 1
+
+// Engine related
+void setLeftEnginePower(int power, int direction) {
+  if (direction == ENGINE_FORWARD)
+    digitalWrite(M1, HIGH);
+  else if (direction == ENGINE_BACKWARD)
+    digitalWrite(M1, LOW);
+
+  analogWrite(E1, power);
+}
+
+void setRightEnginePower(int power, int direction) {
+  if (direction == ENGINE_FORWARD)
+    digitalWrite(M2, HIGH);
+  else if (direction == ENGINE_BACKWARD)
+    digitalWrite(M2, LOW);
+
+  analogWrite(E2, power);
+}
+
+void setEnginePower(int power, int direction) {
+  setLeftEnginePower(power, direction); 
+  setRightEnginePower(power, direction); 
+}
+
+void stopEngines() {
+  setEnginePower(0, ENGINE_FORWARD);
+}
+
+
 void setup()
 {
   setupEngines();
@@ -206,23 +238,26 @@ void loop()
         switch(engine) {
           // Left engine
           case 'L':
-            if (s[3] == '+') {
-              digitalWrite(M1, HIGH);
+            switch (s[3]) {
+              case '+':
+                setLeftEnginePower(power, ENGINE_FORWARD);
+              break;
+              case '-':
+                setLeftEnginePower(power, ENGINE_BACKWARD);
+              break;
             }
-            else if (s[3] == '-')
-              digitalWrite(M1, LOW);
-              
-            analogWrite(E1, power);
           break; 
           
           // Right engine
           case 'R':
-            if (s[3] == '+') {
-              digitalWrite(M2, HIGH);
+            switch (s[3]) {
+              case '+':
+                setRightEnginePower(power, ENGINE_FORWARD);
+              break;
+              case '-':
+                setRightEnginePower(power, ENGINE_BACKWARD);
+              break;
             }
-            else if (s[3] == '-')
-              digitalWrite(M2, LOW);
-            analogWrite(E2, power);
           break; 
         }
       }
