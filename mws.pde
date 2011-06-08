@@ -1,6 +1,9 @@
 #include <Ultrasonic.h>
 #include <Wire.h>
 
+// Internals
+#define ROTATE_POWER 50
+
 //Arduino PWM Speed Control：
 int E1 = 6;  
 int M1 = 7;
@@ -189,7 +192,7 @@ void rotateRight(int rotate) {
   
   hdg = startHdg = readCompass();
   destHdg = startHdg + rotate;
-  engineRotateRight(100);
+  engineRotateRight(ROTATE_POWER);
   bool turn = false;
   if ((hdg + rotate) >= 359) {
     turn = true;
