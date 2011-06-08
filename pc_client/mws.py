@@ -44,6 +44,14 @@ class MWS:
     return self._serial_port.readline()
 
   def setHeading(self, hdg):
+    h = int(float(self.getSensorsRead().split(" ")[5][3:]))
+    if ((h + hdg)>360) or (hdg>h):
+      print "rotateRight"
+    elif ((h - hdg)<0) or (hdg<h):
+      print "rotateLeft"
+    print h, hdg
+    return
+
     self._serial_port.write("sH%03d\n" % (hdg))
     return self._serial_port.readline()
 
