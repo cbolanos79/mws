@@ -294,7 +294,7 @@ void loop()
       Serial.print(readCompass());
       Serial.println();
     } else if (s[0] == 's') {
-      int power;
+      int power = atoi(&s[4]);
       int engine;
       // Set engine power
       switch (s[1]) {
