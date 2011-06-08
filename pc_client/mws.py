@@ -15,15 +15,17 @@ class MWS:
 
   def setLeftEnginePower(self, power, direction = FORWARD):
     if direction == self.FORWARD:
-      self._serial_port.write("sEL%s%s\n" % ("+", chr(power)))
+      self._serial_port.write("sEL%s%s\n" % ("+", power))
     elif direction == self.BACKWARD:
-      self._serial_port.write("sEL%s%s\n" % ("-", chr(power)))
+      self._serial_port.write("sEL%s%s\n" % ("-", power))
+    self._serial_port.read()
 
   def setRightEnginePower(self, power, direction = FORWARD):
     if direction == self.FORWARD:
-      self._serial_port.write("sER%s%s\n" % ("-", chr(power)))
+      self._serial_port.write("sER%s%s\n" % ("-", power))
     elif direction == self.BACKWARD:
-      self._serial_port.write("sER%s%s\n" % ("+", chr(power)))
+      self._serial_port.write("sER%s%s\n" % ("+", power))
+    self._serial_port.read()
 
   def engineRotateRight(self, power):
     m.setLeftEnginePower(power)
@@ -37,17 +39,21 @@ class MWS:
     self._serial_port.write("rR%03d\n" % (rotate))
     return self._serial_port.readline()
 
+  def rotateLeft(self, rotate):
+    self._serial_port.write("rL%03d\n" % (rotate))
+    return self._serial_port.readline()
+
   def setHeading(self, hdg):
     self._serial_port.write("sH%03d\n" % (hdg))
     return self._serial_port.readline()
 
   def setEnginePower(self, power, direction = FORWARD):
     if direction == self.FORWARD:
-      self._serial_port.write("sEL%s%s\n" % ("+", chr(power)))
-      self._serial_port.write("sER%s%s\n" % ("-", chr(power)))
+      self._serial_port.write("sEL%s%s\n" % ("+", power))
+      self._serial_port.write("sER%s%s\n" % ("-", power))
     elif direction == self.BACKWARD:
-      self._serial_port.write("sEL%s%s\n" % ("-", chr(power)))
-      self._serial_port.write("sER%s%s\n" % ("+", chr(power)))
+      self._serial_port.write("sEL%s%s\n" % ("-", power))
+      self._serial_port.write("sER%s%s\n" % ("+", power))
     return self._serial_port.readline()
 
 if __name__== "__main__":
@@ -61,4 +67,8 @@ if __name__== "__main__":
       m.setHeading(int(sys.argv[3]))
     elif cmd == "rr":
       m .rotateRight(int(sys.argv[3]))
+    elif cmd == "rl":
+      print m .rotateLeft(int(sys.argv[3]))
+    elif cmd == "t":
+      terraza(m)
     sys.exit(0)
