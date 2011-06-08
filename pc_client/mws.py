@@ -69,6 +69,4 @@ if __name__== "__main__":
       m .rotateRight(int(sys.argv[3]))
     elif cmd == "rl":
       print m .rotateLeft(int(sys.argv[3]))
-    elif cmd == "t":
-      terraza(m)
     sys.exit(0)
