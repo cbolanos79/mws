@@ -222,6 +222,40 @@ void rotateRight(int rotate) {
   
 }
 
+void rotateLeft(int rotate) {
+  int hdg, startHdg, destHdg;
+  
+  hdg = startHdg = readCompass();
+  destHdg = startHdg - rotate;
+
+  engineRotateLeft(ROTATE_POWER);
+
+  bool turn = false;
+  if ((hdg - rotate) < 0) {
+    turn = true;
+    while (1) {
+      hdg = readCompass();
+      if (hdg>350) {
+        destHdg = 360 - abs(destHdg);
+        break;
+      }
+    }
+  }
+
+  if (turn) {
+    while (hdg < destHdg) {
+      hdg = readCompass();
+    }
+    delay(10);
+  }
+
+  while (hdg > destHdg) {
+    hdg = readCompass();
+  }
+  stopEngines();
+  
+}
+
 void setHeading(int hdg) {
   int currentHdg = readCompass();
   //delay(100);
@@ -338,10 +372,13 @@ void loop()
     } else if (s[0] == 'r') {
       // Rotate
       char dir = s[1];
+      int rotate = atoi(&s[2]);
       switch(dir) {
         case 'R':
-          int rotate = atoi(&s[2]);
           rotateRight(rotate);
+        break;
+        case 'L':
+          rotateLeft(rotate);
         break;
       }
       Serial.println("end");      
