@@ -118,6 +118,19 @@ bool readDht11(float &temp, float &hum) {
 
 void setupCompass() {
   Wire.begin();  
+  
+  // Calibrate
+  engineRotateRight(ROTATE_POWER);
+  int startHdg = readCompass();
+  while (startHdg<50)
+    startHdg = readCompass();
+  
+  int laps = 0;
+  // Turn 2 laps  
+  Wire.send("C");
+  delay(10000);
+  Wire.send("E");
+  stopEngines();
 }
 
 float readCompass() {
@@ -138,8 +151,11 @@ float readCompass() {
     headingData[i] = Wire.receive();
     i++;
   }
-  int headingValue = headingData[0]*256 + headingData[1];    
-  return int(headingValue/10) + (0.1*(int(headingValue%10)));
+  int headingValue = headingData[0]*256 + headingData[1];
+  int v = int(headingValue/10) + (0.1*(int(headingValue%10)));
+  Serial.print(v);
+  Serial.print(" ");
+  return v; //int(headingValue/10) + (0.1*(int(headingValue%10)));
 }
 
 #define ENGINE_FORWARD 0
