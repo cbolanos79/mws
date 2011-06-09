@@ -1,3 +1,3 @@
-* Implementar giro a la izquierda.
+* Restablecer potencia de motores al terminar el heading
 * Implementar en arduino los algoritmos probados en python.
 * Implementar envío de datos por VirtualWire (determinar cada cuanto tiempo).
