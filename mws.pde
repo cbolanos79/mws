@@ -199,7 +199,7 @@ void rotateRight(int rotate) {
     while (1) {
       //delay(50);
       hdg = readCompass();
-      if (hdg>=359) { // || (hdg <=5)){
+      if (hdg>=357) { // || (hdg <=5)){
         destHdg = destHdg - 359;
         break;
       }
@@ -213,8 +213,9 @@ void rotateRight(int rotate) {
     turn = false;
   }
       
-  while (hdg < destHdg) {
-    //delay(50);
+  int prevHdg=hdg;
+  while ((hdg < destHdg) || (prevHdg < hdg)) {
+    prevHdg = hdg;
     hdg = readCompass();
     
   }
@@ -235,21 +236,25 @@ void rotateLeft(int rotate) {
     turn = true;
     while (1) {
       hdg = readCompass();
-      if (hdg>350) {
+      if (hdg>355) {
         destHdg = 360 - abs(destHdg);
+
         break;
       }
     }
   }
 
   if (turn) {
+    hdg = readCompass();
     while (hdg < destHdg) {
       hdg = readCompass();
     }
-    delay(10);
   }
 
-  while (hdg > destHdg) {
+  int prevHdg=hdg;
+
+  while ((hdg > destHdg) || (prevHdg > hdg)){
+    prevHdg = hdg;
     hdg = readCompass();
   }
   stopEngines();
@@ -257,20 +262,26 @@ void rotateLeft(int rotate) {
 }
 
 void setHeading(int hdg) {
-  int currentHdg = readCompass();
-  //delay(100);
-  //currentHdg = readCompass();
-  int destHdg;
-  
-  if (hdg == currentHdg)
-    return;
-
-  if (hdg > currentHdg)
-    destHdg = hdg - currentHdg;
-  else
-    destHdg = (360 - currentHdg) + hdg;
-  rotateRight(destHdg);
-  
+  int h = readCompass();
+  int dif = (360 - hdg) + h;
+  int dest = 0;
+  if (hdg < h) {
+    if ((h - hdg) < 180) {
+      dest = h - hdg;
+      rotateLeft(dest);
+    } else {
+      dest = (360 - h) + hdg;
+      rotateRight(dest);
+    }
+  } else if (hdg > h) {
+    if ((hdg - h) < 180) {
+      dest = hdg - h;
+      rotateRight(dest);
+    } else {
+      dest = (360 - hdg) + h;
+      rotateLeft(dest);
+    }
+  }
 }
 
 void setup()
